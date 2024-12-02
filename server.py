@@ -1,7 +1,8 @@
+import os
 import socket
 
-HOST = '0.0.0.0'  # Lắng nghe tất cả các kết nối
-PORT = int(os.getenv("PORT", 12345))  # Heroku cung cấp PORT qua biến môi trường
+HOST = '0.0.0.0'  # Lắng nghe mọi kết nối
+PORT = int(os.getenv("PORT", 12345))  # Render cung cấp PORT qua biến môi trường
 
 def start_server():
     server_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
