@@ -1,24 +1,21 @@
 import os
-import socket
+from flask import Flask, request
+from flask_socketio import SocketIO, send
 
-HOST = '0.0.0.0'  # Lắng nghe mọi kết nối
-PORT = int(os.getenv("PORT", 12345))  # Render cung cấp PORT qua biến môi trường
+app = Flask(__name__)
+app.config['SECRET_KEY'] = 'your-secret-key'  # Thay bằng secret key của bạn
+socketio = SocketIO(app)
 
-def start_server():
-    server_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-    server_socket.bind((HOST, PORT))
-    server_socket.listen(5)
-    print(f"Server đang chạy trên {HOST}:{PORT}")
+@app.route("/", methods=["GET"])
+def home():
+    return "WebSocket Server is running!"
 
-    while True:
-        client_socket, addr = server_socket.accept()
-        print(f"Kết nối từ {addr}")
-
-        data = client_socket.recv(1024).decode('utf-8')
-        print(f"Dữ liệu nhận được: {data}")
-        client_socket.send(f"Server echo: {data}".encode('utf-8'))
-
-        client_socket.close()
+@socketio.on('message')
+def handle_message(msg):
+    print(f"Tin nhắn từ client: {msg}")
+    # Gửi lại tin nhắn cho client
+    send(f"Server echo: {msg}")
 
 if __name__ == "__main__":
-    start_server()
+    port = int(os.getenv("PORT", 12345))  # PORT sẽ được Render cấp tự động
+    socketio.run(app, host="0.0.0.0", port=port)

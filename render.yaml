@@ -2,5 +2,11 @@ services:
   - type: web
     name: socket-server
     env: python
+    plan: free
     buildCommand: ""
-    startCommand: "bash start.sh"
+    startCommand: python server.py
+    branch: main
+    autoDeploy: true
+    envVars:
+      - key: SECRET_KEY
+        value: your-secret-key
